@@ -1,0 +1,19 @@
+{
+  "name": "notecmd",
+  "version": "0.0.0",
+  "description": "Windows command prompt disguised as notepad.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "cmd",
+    "notepad",
+    "disguise"
+  ],
+  "author": "Brady Koehler <me@bradykoehler.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^2.0.6"
+  }
+}
