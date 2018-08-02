@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Notepad</title>
+
+  <style>
+    textarea {
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      margin: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="cmdIn"></textarea>
+  <script>
+    const {
+      ipcRenderer
+    } = require('electron')
+    const cmdIn = document.getElementById('cmdIn')
+    let prompt = ""
+
+    window.addEventListener('keypress', (e) => {
+      if (e.keyCode === 13) {
+        let cmd = cmdIn.value.split('\n').pop().split(prompt).slice(1).join()
+        if (cmd && cmd.length > 0) {
+          ipcRenderer.send('msg', cmd)
+        } else {
+          cmdIn.value = cmdIn.value.split("\n").slice(0,-1).join("\n") + "\n" + prompt
+        }
+      }
+    })
+
+    ipcRenderer.on('asynchronous-reply', (event, arg) => {
+      cmdIn.value = cmdIn.value + arg
+    })
+
+    ipcRenderer.on('cwd', (event, arg) => {
+      prompt = arg + "$ "
+      cmdIn.value = cmdIn.value + prompt
+    })
+
+    ipcRenderer.send('cwd')
+  </script>
+</body>
+
+</html>
