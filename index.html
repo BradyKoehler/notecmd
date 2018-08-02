@@ -26,8 +26,12 @@
     const {
       ipcRenderer
     } = require('electron')
-    const cmdIn = document.getElementById('cmdIn')
+    const buffer = document.getElementById('cmdIn')
     let prompt = ""
+
+    function updateBuffer(data) {
+      buffer.value = buffer.value + data;
+    }
 
     window.addEventListener('keypress', (e) => {
       if (e.keyCode === 13) {
@@ -35,18 +39,18 @@
         if (cmd && cmd.length > 0) {
           ipcRenderer.send('msg', cmd)
         } else {
-          cmdIn.value = cmdIn.value.split("\n").slice(0,-1).join("\n") + "\n" + prompt
+          buffer.value = buffer.value.split("\n").slice(0,-1).join("\n") + "\n" + prompt
         }
       }
     })
 
     ipcRenderer.on('asynchronous-reply', (event, arg) => {
-      cmdIn.value = cmdIn.value + arg
+      updateBuffer(arg)
     })
 
     ipcRenderer.on('cwd', (event, arg) => {
       prompt = arg + "$ "
-      cmdIn.value = cmdIn.value + prompt
+      updateBuffer(prompt)
     })
 
     ipcRenderer.send('cwd')
